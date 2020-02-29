@@ -3,22 +3,26 @@
 body {
     font-family: sans-serif;
 }
+
 * {
     box-sizing: border-box;
 }
+
 header {
     background: gray;
     border-radius: 4px;
     height: 150px;
     padding-top: 20px;
 }
+
 .inner {
     max-width: 1000px;
     margin: 0 auto;
     padding: 0px 20px;
     position: relative;
 }
-.logo{
+
+.logo {
     max-width: 140px;
     margin-top: -20px;
 }
@@ -27,46 +31,56 @@ h1 {
     text-align: center;
     width: 100%;
     margin-top: 120px;
-    color:greenyellow;
+    color: greenyellow;
     font-weight: 800;
     font-size: 40px;
 }
-nav > ul {
+
+nav>ul {
     float: right;
 }
-nav > ul > li {
+
+nav>ul>li {
     text-align: center;
     line-height: 40px;
     margin-left: 70px;
 }
-nav > ul li ul li {
+
+nav>ul li ul li {
     width: 100%;
     text-align: left;
 }
+
 nav ul li:hover {
     cursor: pointer;
     position: relative;
 }
-nav ul li:hover > ul {
+
+nav ul li:hover>ul {
     display: block;
 }
-nav ul li:hover > a {
+
+nav ul li:hover>a {
     color: greenyellow;
 }
-nav > ul > li > a {
+
+nav>ul>li>a {
     cursor: pointer;
     display: block;
     outline: none;
     width: 100%;
     text-decoration: none;
 }
-nav > ul > li {
+
+nav>ul>li {
     float: left;
 }
+
 nav a {
     color: white;
 }
-nav > ul li ul {
+
+nav>ul li ul {
     display: none;
     position: absolute;
     left: 0;
@@ -74,13 +88,16 @@ nav > ul li ul {
     width: 100%;
     z-index: 2000;
 }
-nav > ul li ul li > a {
+
+nav>ul li ul li>a {
     text-decoration: none;
 }
+
 [type="checkbox"],
 label {
     display: none;
 }
+
 @media screen and (max-width: 768px) {
     nav ul {
         display: none;
@@ -104,7 +121,7 @@ label {
         margin: 7px 5px;
         box-shadow: 0px 10px 0px #777, 0px 20px 0px #777
     }
-    [type="checkbox"]:checked ~ ul {
+    [type="checkbox"]:checked~ul {
         display: block;
         z-index: 9999;
         position: absolute;
@@ -122,14 +139,14 @@ label {
         background: #222;
         text-indent: 20px;
     }
-    nav > ul > li {
+    nav>ul>li {
         margin-left: 0px;
     }
-    nav > ul li ul li {
+    nav>ul li ul li {
         display: block;
         float: none;
     }
-    nav > ul li ul {
+    nav>ul li ul {
         display: block;
         position: relative;
         width: 100%;
@@ -143,17 +160,19 @@ label {
 
 
 /* submit form css */
-input[type=text], select, textarea {
-    width: 100%; 
-    padding: 12px; 
-    border: 1px solid #ccc; 
-    border-radius: 4px; 
-    box-sizing: border-box; 
-    margin-top: 6px; 
-    margin-bottom: 16px; 
-    resize: vertical ;
-}
 
+input[type=text],
+select,
+textarea {
+    width: 100%;
+    padding: 12px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+    margin-top: 6px;
+    margin-bottom: 16px;
+    resize: vertical;
+}
 
 input[type=submit] {
     background-color: #4CAF50;
@@ -164,11 +183,9 @@ input[type=submit] {
     cursor: pointer;
 }
 
-
 input[type=submit]:hover {
     background-color: #45a049;
 }
-
 
 .container {
     border-radius: 5px;
@@ -176,71 +193,75 @@ input[type=submit]:hover {
     padding: 20px;
 }
 
+
 /* error container */
 
-#replaceMe{
-    font-size:0px;
-    line-height:0;
-    margin:0;
-    padding:0;
-    height:0;
+#replaceMe {
+    font-size: 0px;
+    line-height: 0;
+    margin: 0;
+    padding: 0;
+    height: 0;
 }
 
+
 /* error message */
-#errBox{
+
+#errBox {
     min-width: 100%;
     text-align: center;
     background-color: pink;
     border-radius: 4px;
-    padding-top:5px;
-    padding-bot:5px;
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
-#errMsg{
+#errMsg {
     display: inline-block;
     color: orange;
     font-size: 25px;
 }
 
+
 /* succsses message */
 
-#succssesBox{
-   min-width: 100%;
+#succssesBox {
+    min-width: 100%;
     text-align: center;
     background-color: green;
     border-radius: 4px;
-    padding-top:5px;
-    padding-bot:5px;
-    
+    padding-top: 5px;
+    padding-bottom: 5px;
 }
 
-#succssesMsg{
+#succssesMsg {
     display: inline-block;
     color: orange;
     font-size: 25px
 }
 
+
 /* movies view all */
 
-.movie{
+.movie {
     border: solid 1px greenyellow;
-    display:inline-block;
+    display: inline-block;
     max-width: 30%;
     padding: 1%;
     margin: 1%;
     border-radius: 4px;
-    
 }
 
-.moviePoster{
+.moviePoster {
     display: inline-block;
-    max-width: 100%; 
+    max-width: 100%;
 }
 
-.moviePoster:hover{
+.moviePoster:hover {
     border: solid 1px deepskyblue;
     border-radius: 4px;
 }
+
 
 /*details view */
 
@@ -250,7 +271,6 @@ input[type=submit]:hover {
     border: 2px solid greenyellow;
     padding: 20px;
     overflow: hidden;
-   
 }
 
 .content img {
