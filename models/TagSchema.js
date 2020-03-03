@@ -10,6 +10,10 @@ const TagSchema = new mongoose.Schema({
     default: Date.now,
     required: true
   },
-})
+  images: [{
+    type: mongoose.SchemaTypes.ObjectId,
+    ref: 'Image',
+  }]
+});
 
 module.exports = mongoose.model('Tag', TagSchema);
