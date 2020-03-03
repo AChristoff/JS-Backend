@@ -5,6 +5,10 @@ const imageSchema = new mongoose.Schema({
         type: String,
         required: true
     },
+    title: {
+        type: String,
+        required: true
+    },
     creationDate: {
         type: Date,
         default: Date.now,
@@ -15,7 +19,7 @@ const imageSchema = new mongoose.Schema({
     },
     tags: [{
         type: mongoose.SchemaTypes.ObjectId,
-        ref: 'Tag',
+        ref: 'Tag'
     }],
 });
 
