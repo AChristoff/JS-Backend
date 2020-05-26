@@ -59,15 +59,17 @@ module.exports = {
 
         try {
             const user = await User.findOne({username: userBody.username});
+
             if (!user) {
                 userBody.error = 'Username is invalid!';
-                res.render('user/login');
+                res.render('user/login', userBody);
                 return;
             }
 
             if (!user.authenticate(userBody.password)) {
                 userBody.error = 'Password id invalid';
                 res.render('user/login', userBody);
+                return;
             }
 
             req.logIn(user, (err) => {
