@@ -1,4 +1,5 @@
 const Car = require('../models/Car');
+const Rent = require('../models/Rent');
 
 module.exports = {
     addGet: (req, res) => {
@@ -20,13 +21,42 @@ module.exports = {
 
     },
     getAllCars: (req, res) => {
-        Car.find()
+        Car.find({isRented: false})
             .then((cars) => {
                 res.render('car/all', {cars});
             })
             .catch(console.error);
     },
-    rent: (req, res) => {
+    rentGet: (req, res) => {
+        const carId = req.params.id;
+
+        Car.findById(carId)
+            .then((car) => {
+                res.render('car/rent', car);
+            })
+            .catch(console.error);
+
+
+    },
+    rentPost: (req, res) => {
+        const car = req.params.id;
+        const user = req.user._id;
+        const days = Number(req.body.days);
+
+        Rent.create({car, user, days})
+            .then(() => {
+                Car.findById(car)
+                    .then((c) => {
+                        c.isRented = true;
+
+                        return c.save();
+                    })
+                    .then(() => {
+                        res.render('car/all');
+                    })
+                    .catch(console.error);
+            })
+            .catch(console.error);
     },
     editGet: (req, res) => {
     },
