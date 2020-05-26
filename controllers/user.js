@@ -86,5 +86,8 @@ module.exports = {
             userBody.error = err;
             res.render('user/login', userBody);
         }
-    }
+    },
+    myRent: (req, res) => {
+        res.render('user/login');
+    },
 };
