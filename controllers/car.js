@@ -56,7 +56,27 @@ module.exports = {
         }
     },
     editGet: (req, res) => {
+        const carId = req.params.id;
+        Car.findById(carId)
+            .then((car) => {
+                res.render('car/edit', car);
+            })
+            .catch(console.error);
+
     },
     editPost: (req, res) => {
+        const carId = req.params.id;
+        const {model, imageUrl, pricePerDay} = req.body;
+
+        Car.findById(carId)
+            .then((car) => {
+                car.model = model;
+                car.imageUrl = imageUrl;
+                car.pricePerDay = pricePerDay;
+                console.log();
+                return car.save();
+            })
+            .then(() => { res.redirect('/car/all') })
+            .catch(console.error);
     },
 };

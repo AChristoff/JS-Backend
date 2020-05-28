@@ -1,6 +1,6 @@
 module.exports = {
     isAuthed: (req, res, next) => {
-        if (req.user || req.user.roles.indexOf('Admin') !== -1) {
+        if (req.user) {
             next();
         } else {
             res.redirect('../user/login');
@@ -11,7 +11,7 @@ module.exports = {
             req.user.roles.indexOf(role) > -1) {
             next();
         } else {
-            res.redirect('../user/login');
+            res.redirect('../../user/login');
         }
     },
     isAnonymous: (req, res, next) => {
@@ -21,4 +21,4 @@ module.exports = {
             res.redirect('/');
         }
     }
-}
+};
