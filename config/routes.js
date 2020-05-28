@@ -23,6 +23,8 @@ module.exports = app => {
     app.get('/car/edit/:id', restrictedPages.hasRole('Admin'), carController.editGet);
     app.post('/car/edit/:id', restrictedPages.hasRole('Admin'), carController.editPost);
 
+    app.get('/car/delete/:id', restrictedPages.hasRole('Admin'), carController.deleteGet);
+
     app.all('*', (req, res) => {
         res.status(404);
         res.send('404 Not Found');

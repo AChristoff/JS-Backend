@@ -15,7 +15,7 @@ module.exports = {
         //2. TODO: validate
         Car.create(carBody)
             .then(() => {
-                res.redirect('/');
+                res.redirect('/car/all');
             })
             .catch(console.error);
 
@@ -71,6 +71,15 @@ module.exports = {
         const data = {model, imageUrl, pricePerDay};
 
         Car.findByIdAndUpdate(carId, data)
+            .then(() => {
+                res.redirect('/car/all')
+            })
+            .catch(console.error);
+    },
+    deleteGet: (req, res) => {
+        const carId = req.params.id;
+
+        Car.findByIdAndDelete(carId)
             .then(() => {
                 res.redirect('/car/all')
             })
