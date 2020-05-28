@@ -1,5 +1,7 @@
 const encryption = require('../util/encryption');
 const User = require('../models/User');
+const Car = require('../models/Car');
+const Rent = require('../models/Rent');
 
 module.exports = {
     registerGet: (req, res) => {
@@ -88,6 +90,21 @@ module.exports = {
         }
     },
     myRent: (req, res) => {
-        res.render('user/login');
+        //req.body came from body-parser library
+        //req.user came from passport library
+        const userId = req.user._id;
+
+        Rent.find({user: userId})
+            .populate('car')
+            .then((rents) => {
+                let cars = [];
+                for (let rent of rents) {
+                    rent.car.expiresOn = `In ${rent.days} days`;
+                    cars.push(rent.car);
+                }
+                res.render('user/rented', {cars});
+            }).catch((err) => {
+            console.error(err);
+        });
     },
 };

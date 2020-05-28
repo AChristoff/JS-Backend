@@ -107,6 +107,16 @@ footer {
     display: inline-block;
 }
 
+.car .img-wrapper {
+    width: 500px;
+    height: 300px;
+}
+
+.car img {
+    width: 100%;
+    height: auto;
+}
+
 .car-container {
     display: inline-block;
     margin: 10px;
@@ -212,11 +222,6 @@ td {
     padding: 20px;
     border-radius: 2px;
     color: white;
-}
-
-img {
-    width: 500px;
-    height: 300px;
 }
 
 .error {

@@ -38,25 +38,22 @@ module.exports = {
 
 
     },
-    rentPost: (req, res) => {
+    rentPost: async (req, res) => {
         const car = req.params.id;
         const user = req.user._id;
         const days = Number(req.body.days);
 
-        Rent.create({car, user, days})
-            .then(() => {
-                Car.findById(car)
-                    .then((c) => {
-                        c.isRented = true;
-
-                        return c.save();
-                    })
-                    .then(() => {
-                        res.render('car/all');
-                    })
-                    .catch(console.error);
-            })
-            .catch(console.error);
+        try {
+            const rent = await Rent.create({car, user, days});
+            const carById = await Car.findById(car);
+            carById.isRented = true;
+            await carById.save();
+            req.user.rents.push(rent._id);
+            await req.user.save();
+            res.render('car/all');
+        } catch (e) {
+            console.error(e);
+        }
     },
     editGet: (req, res) => {
     },

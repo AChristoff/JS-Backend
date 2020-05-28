@@ -7,7 +7,8 @@ const userSchema = new mongoose.Schema({
     firstName: {type: mongoose.Schema.Types.String},
     lastName: {type: mongoose.Schema.Types.String},
     salt: {type: mongoose.Schema.Types.String, required: true},
-    roles: [{type: mongoose.Schema.Types.String}]
+    roles: [{type: mongoose.Schema.Types.String}],
+    rents: [{type: mongoose.Schema.Types.ObjectId, ref: 'Rent'}],
 });
 
 userSchema.method({
@@ -36,7 +37,8 @@ User.seedAdmin = async () => {
             firstName: 'Pesho',
             lastName: 'Georgiev',
             salt,
-            roles: ['Admin']
+            roles: ['Admin'],
+            rents: []
         });
     } catch (e) {
         console.error(e);

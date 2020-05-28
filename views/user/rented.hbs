@@ -9,9 +9,9 @@
     <tbody>
         {{#each cars}}
         <tr>
-            <td>{{car.model}}</td>
-            <td>{{car.pricePerDay}} &euro;</td>
-            <td>{{car.expiresOn}}</td>
+            <td>{{this.model}}</td>
+            <td>{{this.pricePerDay}} &euro;</td>
+            <td>{{this.expiresOn}}</td>
         </tr>
         {{/each}}
     </tbody>
