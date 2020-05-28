@@ -67,16 +67,13 @@ module.exports = {
     editPost: (req, res) => {
         const carId = req.params.id;
         const {model, imageUrl, pricePerDay} = req.body;
+        // TODO validate if needed and sanitize
+        const data = {model, imageUrl, pricePerDay};
 
-        Car.findById(carId)
-            .then((car) => {
-                car.model = model;
-                car.imageUrl = imageUrl;
-                car.pricePerDay = pricePerDay;
-                console.log();
-                return car.save();
+        Car.findByIdAndUpdate(carId, data)
+            .then(() => {
+                res.redirect('/car/all')
             })
-            .then(() => { res.redirect('/car/all') })
             .catch(console.error);
     },
 };
