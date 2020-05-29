@@ -27,6 +27,19 @@ module.exports = {
             })
             .catch(console.error);
     },
+    getSearchCar: (req, res) => {
+        let query = req.query.model;
+        Car.find({})
+            // .where('year')
+            // .gte(from)
+            // .lto(to)
+            .then((cars) => {
+                const filtered = cars.filter(x => x.model.toLowerCase().includes(query.toLowerCase()));
+                res.render('car/all', {cars: filtered});
+            })
+            .catch(console.error);
+        req.body.error = 'Passwords do not match!';
+    },
     rentGet: (req, res) => {
         const carId = req.params.id;
 

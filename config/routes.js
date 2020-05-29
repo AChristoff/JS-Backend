@@ -17,6 +17,8 @@ module.exports = app => {
 
     app.get('/car/all', carController.getAllCars);
 
+    app.get('/car/search', carController.getSearchCar);
+
     app.get('/car/rent/:id', restrictedPages.isAuthed, carController.rentGet);
     app.post('/car/rent/:id', restrictedPages.isAuthed, carController.rentPost);
 
