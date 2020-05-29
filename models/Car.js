@@ -6,6 +6,10 @@ const carSchema = new Schema({
         type: Schema.Types.String,
         required: true,
     },
+    year: {
+        type: Schema.Types.Number,
+        required: true,
+    },
     imageUrl: {
         type: Schema.Types.String,
         required: true,

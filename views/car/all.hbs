@@ -1,12 +1,52 @@
 <form id="search-form" action="/car/search">
     <!--Chosse criteria for searching-->
-    <input type="text" name="model" placeholder="">
+
+    {{#if model}}
+        <input type="text" name="model" placeholder="" value="{{model}}">
+    {{else}}
+        <input type="text" name="model" placeholder="">
+    {{/if}}
+
+
+    <label for="yearFrom">Model year from:</label>
+    <select id="yearFrom" name="yearFrom">
+
+        {{#if yearFrom}}
+            <option selected="selected" value="{{yearFrom}}">{{yearFrom}}</option>
+        {{else}}
+            <option selected="selected" value="2000">2000</option>
+        {{/if}}
+
+        {{#each years}}
+            <option value="{{this}}">{{this}}</option>
+        {{/each}}
+
+    </select>
+
+    <label for="yearTo">to:</label>
+    <select id="yearTo" name="yearTo">
+
+        {{#if yearTo}}
+            <option selected="selected" value="{{yearTo}}">{{yearTo}}</option>
+        {{else}}
+            <option selected="selected" value="2021">2021</option>
+        {{/if}}
+
+        {{#each years}}
+            <option value="{{this}}">{{this}}</option>
+        {{/each}}
+
+    </select>
+
     <input class="submit-btn" type="submit" value="Search"/>
+
 </form>
+
 <div id="container">
     {{#each cars}}
         <div class="car">
             <h2>{{model}}</h2>
+            <p>{{year}}</p>
             <div class="img-wrapper">
                 <img src="{{imageUrl}}" alt="car">
             </div>

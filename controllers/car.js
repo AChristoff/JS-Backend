@@ -1,6 +1,11 @@
 const Car = require('../models/Car');
 const Rent = require('../models/Rent');
 
+let years = [];
+for (let i = 2000; i < 2021; i++) {
+    years.push(i)
+}
+
 module.exports = {
     addGet: (req, res) => {
         res.render('car/add');
@@ -23,28 +28,36 @@ module.exports = {
     getAllCars: (req, res) => {
         Car.find({isRented: false})
             .then((cars) => {
-                res.render('car/all', {cars});
+                res.render('car/all', {cars, years});
             })
             .catch(console.error);
     },
     getSearchCar: (req, res) => {
-        let query = req.query.model;
-        // let year = req.query.year;
-        // let horsePower = req.query.horsePower;
-        Car.find({isRented: false})//{year}
-        // .where('horsePower')
-        // .gte(from)
-        // .lto(to)
+        let model = req.query.model;
+        let yearFrom = req.query.yearFrom;
+        let yearTo = req.query.yearTo;
+
+        Car.find({isRented: false})
+            .where('year')
+            .gte(yearFrom)
+            .lte(yearTo)
             .then((cars) => {
-                const filtered = cars.filter(x => x.model.toLowerCase().includes(query.toLowerCase()));
 
-                cars = {};
-                cars.cars = filtered;
+                if (model.length >= 0) {
+                    const filtered = cars.filter(x => x.model.toLowerCase().includes(model.toLowerCase()));
+                    cars = {};
+                    cars.cars = filtered;
+                }
 
-                if (filtered.length === 0) {
+                if (cars.cars.length === 0) {
                     cars.error = 'No results!';
                 }
 
+                cars.model = model;
+                cars.years = years;
+                cars.yearFrom = yearFrom;
+                cars.yearTo = yearTo;
+                console.log(cars);
                 res.render('car/all', cars);
             })
             .catch(console.error);
