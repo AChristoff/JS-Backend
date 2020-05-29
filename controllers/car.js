@@ -29,16 +29,25 @@ module.exports = {
     },
     getSearchCar: (req, res) => {
         let query = req.query.model;
-        Car.find({})
-            // .where('year')
-            // .gte(from)
-            // .lto(to)
+        // let year = req.query.year;
+        // let horsePower = req.query.horsePower;
+        Car.find({isRented: false})//{year}
+        // .where('horsePower')
+        // .gte(from)
+        // .lto(to)
             .then((cars) => {
                 const filtered = cars.filter(x => x.model.toLowerCase().includes(query.toLowerCase()));
-                res.render('car/all', {cars: filtered});
+
+                cars = {};
+                cars.cars = filtered;
+
+                if (filtered.length === 0) {
+                    cars.error = 'No results!';
+                }
+
+                res.render('car/all', cars);
             })
             .catch(console.error);
-        req.body.error = 'Passwords do not match!';
     },
     rentGet: (req, res) => {
         const carId = req.params.id;
