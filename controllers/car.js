@@ -57,7 +57,6 @@ module.exports = {
                 cars.years = years;
                 cars.yearFrom = yearFrom;
                 cars.yearTo = yearTo;
-                console.log(cars);
                 res.render('car/all', cars);
             })
             .catch(console.error);
