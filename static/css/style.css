@@ -103,6 +103,11 @@ footer {
     margin-top: auto;
 }
 
+#home h1 {
+    margin-top: 20vh;
+    font-size: 30px;
+}
+
 .car {
     display: inline-block;
 }
