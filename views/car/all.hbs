@@ -14,7 +14,7 @@
         {{#if yearFrom}}
             <option selected="selected" value="{{yearFrom}}">{{yearFrom}}</option>
         {{else}}
-            <option selected="selected" value="2000">2000</option>
+            <option selected="selected" value="">-year-</option>
         {{/if}}
 
         {{#each years}}
@@ -29,10 +29,10 @@
         {{#if yearTo}}
             <option selected="selected" value="{{yearTo}}">{{yearTo}}</option>
         {{else}}
-            <option selected="selected" value="2021">2021</option>
+            <option selected="selected" value="">-year-</option>
         {{/if}}
 
-        {{#each years}}
+        {{#each yearsDesc}}
             <option value="{{this}}">{{this}}</option>
         {{/each}}
 

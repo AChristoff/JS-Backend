@@ -2,9 +2,15 @@ const Car = require('../models/Car');
 const Rent = require('../models/Rent');
 
 let years = [];
-for (let i = 2000; i < 2021; i++) {
+let currentYear = new Date().getFullYear(),
+    yearStart = currentYear - 20;
+
+for (let i = yearStart; i <= currentYear; i++) {
     years.push(i)
 }
+
+let yearsDesc = [...years];
+yearsDesc.sort(function(a, b){return b-a});
 
 module.exports = {
     addGet: (req, res) => {
@@ -26,9 +32,10 @@ module.exports = {
 
     },
     getAllCars: (req, res) => {
+
         Car.find({isRented: false})
             .then((cars) => {
-                res.render('car/all', {cars, years});
+                res.render('car/all', {cars, years, yearsDesc});
             })
             .catch(console.error);
     },
@@ -55,6 +62,7 @@ module.exports = {
 
                 cars.model = model;
                 cars.years = years;
+                cars.yearsDesc = yearsDesc;
                 cars.yearFrom = yearFrom;
                 cars.yearTo = yearTo;
                 res.render('car/all', cars);
