@@ -40,7 +40,7 @@ module.exports = {
                     userBody.error = err;
                     res.render('user/register', userBody);
                 } else {
-                    res.redirect('/');
+                    res.redirect('/car/all');
                 }
             });
 
@@ -48,6 +48,46 @@ module.exports = {
             console.log(err);
         }
 
+    },
+    editUserGet: (req, res) => {
+        const user = req.user;
+        res.render('user/edit', user);
+    },
+    editUserPost: async (req, res) => {
+        const user = req.user;
+        const userId = req.user._id;
+        const dbHashedPass = req.user.hashedPass;
+        const salt = req.user.salt;
+        const roles = req.user.roles;
+
+        const userBody = req.body;
+
+        const hashedPass = encryption.generateHashedPassword(salt, userBody.password);
+        const newHashedPass = encryption.generateHashedPassword(salt, userBody.newPassword);
+
+        try {
+            if (dbHashedPass === hashedPass) {
+                const newUserData = {
+                    username: userBody.username,
+                    hashedPass: newHashedPass,
+                    salt,
+                    firstName: userBody.firstName,
+                    lastName: userBody.lastName,
+                    roles
+                };
+                await User.updateOne({_id: userId}, newUserData);
+
+                newUserData.message = "Success";
+                res.render('user/edit', newUserData);
+            } else {
+                user.message = "Password is invalid";
+                res.render('user/edit', user);
+            }
+
+
+        } catch (err) {
+            console.log(err);
+        }
     },
     logout: (req, res) => {
         req.logout();
@@ -79,7 +119,7 @@ module.exports = {
                     userBody.error = err;
                     res.render('user/login', userBody);
                 } else {
-                    res.redirect('/');
+                    res.redirect('/car/all');
                 }
             });
 
@@ -100,8 +140,10 @@ module.exports = {
                 let cars = [];
                 for (let rent of rents) {
                     rent.car.expiresOn = `In ${rent.days} days`;
+                    rent.car.rentId = rent._id;
                     cars.push(rent.car);
                 }
+
                 res.render('user/rented', {cars});
             }).catch((err) => {
             console.error(err);

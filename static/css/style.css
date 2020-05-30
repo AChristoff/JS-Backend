@@ -68,6 +68,11 @@ nav a {
     color: #607D8B;
 }
 
+nav a.user-edit {
+    margin-left: 110px;
+    text-transform: none;
+}
+
 nav li:hover a {
     background-color: #fad760e6;
     border-bottom: 1px solid gray;
@@ -112,17 +117,24 @@ footer {
     display: inline-block;
 }
 
-.car .img-wrapper {
+.car .img-wrapper,
+.car-details .img-wrapper {
     width: 30vw;
     padding-top: 57%;
     position: relative;
     overflow: hidden;
     border: 1px solid #607D8B;
     border-radius: 5px;
-    margin: 5px;
+    margin: 5px auto;
 }
 
-.car img {
+.car-details .img-wrapper {
+    width: 35%;
+    padding-top: 22%;
+}
+
+.car img,
+.car-details img {
     width: 100%;
     height: auto;
     position: absolute;
@@ -162,7 +174,8 @@ form#register-form,
 form#login-form,
 form#search-form,
 form.car-form,
-form#rent-form {
+form#rent-form,
+form#edit-user-form {
     padding: 10px;
     width: 300px;
     display: inline-block;
@@ -219,6 +232,16 @@ td {
     background-color: #dddddd;
     height: 30px;
     width: 100px;
+    padding-left: 10px;
+}
+
+td:last-child {
+    text-align: center;
+}
+
+td:last-child:hover {
+    cursor: pointer;
+    font-weight: bold;
 }
 
 #notification {

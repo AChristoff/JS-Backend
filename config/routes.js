@@ -12,6 +12,9 @@ module.exports = app => {
     app.post('/user/logout', userController.logout);
     app.get('/user/rents', restrictedPages.isAuthed, userController.myRent);
 
+    app.get('/user/edit', restrictedPages.isAuthed, userController.editUserGet);
+    app.post('/user/edit', restrictedPages.isAuthed, userController.editUserPost);
+
     app.get('/car/add', restrictedPages.hasRole('Admin'), carController.addGet);
     app.post('/car/add', restrictedPages.hasRole('Admin'), carController.addPost);
 
@@ -21,6 +24,8 @@ module.exports = app => {
 
     app.get('/car/rent/:id', restrictedPages.isAuthed, carController.rentGet);
     app.post('/car/rent/:id', restrictedPages.isAuthed, carController.rentPost);
+
+    app.get('/car/cancel-rent/:rentId/car/:carId', restrictedPages.isAuthed, carController.cancelRentGet);
 
     app.get('/car/edit/:id', restrictedPages.hasRole('Admin'), carController.editGet);
     app.post('/car/edit/:id', restrictedPages.hasRole('Admin'), carController.editPost);

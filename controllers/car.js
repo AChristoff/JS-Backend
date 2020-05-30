@@ -10,7 +10,9 @@ for (let i = yearStart; i <= currentYear; i++) {
 }
 
 let yearsDesc = [...years];
-yearsDesc.sort(function(a, b){return b-a});
+yearsDesc.sort(function (a, b) {
+    return b - a
+});
 
 module.exports = {
     addGet: (req, res) => {
@@ -92,7 +94,29 @@ module.exports = {
             await carById.save();
             req.user.rents.push(rent._id);
             await req.user.save();
-            res.render('car/all');
+            res.redirect('/car/all');
+        } catch (e) {
+            console.error(e);
+        }
+    },
+    cancelRentGet: async (req, res) => {
+        const {rentId, carId} = req.params;
+
+        try {
+            // delete rent from Rents table
+            await Rent.findByIdAndDelete(rentId);
+
+            //delete rent ObjectID from "rents" array in User
+            req.user.rents = req.user.rents.filter((x) => x.toString()!==rentId);
+            await req.user.save();
+
+            // set Car as available
+            const carById = await Car.findById(carId);
+            carById.isRented = false;
+            await carById.save();
+
+
+            res.redirect('/user/rents');
         } catch (e) {
             console.error(e);
         }
@@ -108,9 +132,9 @@ module.exports = {
     },
     editPost: (req, res) => {
         const carId = req.params.id;
-        const {model, imageUrl, pricePerDay} = req.body;
+        const {model, year, imageUrl, pricePerDay} = req.body;
         // TODO validate if needed and sanitize
-        const data = {model, imageUrl, pricePerDay};
+        const data = {model, year, imageUrl, pricePerDay};
 
         Car.findByIdAndUpdate(carId, data)
             .then(() => {

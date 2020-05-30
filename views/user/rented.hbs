@@ -1,18 +1,25 @@
 <table>
-    <thead>
-        <tr>
-            <th>Model</th>
-            <th>Price Per Day</th>
-            <th>Rent Expires</th>
-        </tr>
-    </thead>
-    <tbody>
-        {{#each cars}}
-        <tr>
-            <td>{{model}}</td>
-            <td>{{pricePerDay}} &euro;</td>
-            <td>{{expiresOn}}</td>
-        </tr>
-        {{/each}}
-    </tbody>
+    {{#if cars}}
+        <thead>
+            <tr>
+                <th>Model</th>
+                <th>Price Per Day</th>
+                <th>Rent Expires</th>
+                <th>Cancel Rent</th>
+            </tr>
+        </thead>
+        <tbody>
+            {{#each cars}}
+                <tr>
+                    <td>{{model}}</td>
+                    <td>{{pricePerDay}} &euro;</td>
+                    <td>{{expiresOn}}</td>
+                    <td class="cancel-rent"><a class="rent-btn" href="/car/cancel-rent/{{rentId}}/car/{{_id}}">X</a>
+                    </td>
+                </tr>
+            {{/each}}
+        </tbody>
+    {{else}}
+        <h3>You have no rents</h3>
+    {{/if}}
 </table>
