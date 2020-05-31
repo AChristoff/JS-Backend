@@ -6,14 +6,14 @@ const isAuth = require('../middleware/is-auth');
 router.get('/posts', isAuth, feedController.getPosts);
 router.post('/post/create', isAuth, [
     body('title')
+        .trim()
         .not()
         .isEmpty().withMessage('Title is required')
-        .trim()
         .escape(),
     body('content')
+        .trim()
         .not()
         .isEmpty().withMessage('Content is required')
-        .trim()
         .escape(),
 ], feedController.createPost);
 router.delete('/post/delete/:postId', isAuth, feedController.deletePost);
