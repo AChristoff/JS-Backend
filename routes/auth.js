@@ -6,7 +6,6 @@ const regExp = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':
 
 router.post('/register',
     [
-        // TODO: Add normalize email and check
         body('email')
             .isEmail().withMessage('Please enter a valid email.')
             .custom((value, {req}) => {
@@ -25,8 +24,11 @@ router.post('/register',
             .trim()
             .not()
             .isEmpty().withMessage('Please enter a valid name.')
+            .matches(/^[A-Za-z\s]+$/).withMessage('Name must be alphabetic.')
+            .escape()
     ],
-    authController.register);
+    authController.register
+);
 
 router.post('/login', authController.login);
 router.post('/edit', authController.edit);
