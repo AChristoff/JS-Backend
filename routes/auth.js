@@ -4,7 +4,7 @@ const authController = require('../controllers/auth');
 const User = require('../models/User');
 const regExp = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`])[0-9a-zA-Z!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]{6,60}$/;
 
-router.post('/signup',
+router.post('/register',
     [
         // TODO: Add normalize email and check
         body('email')
@@ -26,7 +26,9 @@ router.post('/signup',
             .not()
             .isEmpty().withMessage('Please enter a valid name.')
     ]
-    , authController.signUp);
-router.post('/signin', authController.signIn);
+    , authController.register);
+
+router.post('/login', authController.login);
+router.post('/delete', authController.delete);
 
 module.exports = router;
