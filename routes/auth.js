@@ -25,10 +25,11 @@ router.post('/register',
             .trim()
             .not()
             .isEmpty().withMessage('Please enter a valid name.')
-    ]
-    , authController.register);
+    ],
+    authController.register);
 
 router.post('/login', authController.login);
+router.post('/edit', authController.edit);
 router.post('/delete', authController.delete);
 
 module.exports = router;
