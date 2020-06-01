@@ -87,7 +87,7 @@ module.exports = {
     delete: (req, res, next) => {
         const {email, password} = req.body;
 
-        User.findOneAndDelete({email: email})
+        User.findOne({email: email})
             .then((user) => {
                 if (!user) {
                     const error = new Error('User not found!');
@@ -101,12 +101,12 @@ module.exports = {
                     throw error;
                 }
 
+                return User.findOneAndDelete({email: email});
+            })
+            .then(() => {
+
                 const token = jwt.sign(
-                    {
-                        role: user.role,
-                        email: user.email,
-                        userId: user._id.toString()
-                    },
+                    {},
                     'somesupersecret',
                     {expiresIn: '0s'});
 
