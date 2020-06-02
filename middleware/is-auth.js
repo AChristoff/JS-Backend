@@ -1,5 +1,7 @@
 const jwt = require('jsonwebtoken');
 
+const {jwtSecret} = require('../config/environment');
+
 module.exports = (req, res, next) => {
   const authHeaders = req.get('Authorization');
   if (!authHeaders) {
@@ -10,7 +12,7 @@ module.exports = (req, res, next) => {
   const token = req.get('Authorization').split(' ')[1];
   let decodedToken;
   try {
-    decodedToken = jwt.verify(token, 'somesupersecret')
+    decodedToken = jwt.verify(token, jwtSecret);
   } catch(error) {
     return res.status(401)
       .json({ message: 'Token is invalid.', error });

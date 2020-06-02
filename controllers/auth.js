@@ -1,7 +1,10 @@
 const {validationResult} = require('express-validator/check');
 const jwt = require('jsonwebtoken');
+
 const User = require('../models/User');
 const encryption = require('../util/encryption');
+
+const {jwtSecret} = require('../config/environment');
 
 function validateUser(req, res) {
     const errors = validationResult(req);
@@ -10,10 +13,8 @@ function validateUser(req, res) {
             message: 'User data error!',
             errors: errors.array()
         });
-
         return false;
     }
-
     return true;
 }
 
@@ -46,6 +47,8 @@ module.exports = {
     login: (req, res, next) => {
         const {email, password} = req.body;
 
+        console.log(jwtSecret);
+
         User.findOne({email: email})
             .then((user) => {
                 if (!user) {
@@ -66,7 +69,7 @@ module.exports = {
                         email: user.email,
                         userId: user._id.toString()
                     },
-                    'somesupersecret',
+                    jwtSecret,
                     {expiresIn: '1h'});
 
                 res.status(200).json(
@@ -179,7 +182,7 @@ module.exports = {
 
                 const token = jwt.sign(
                     {},
-                    'somesupersecret',
+                    jwtSecret,
                     {expiresIn: '0s'});
 
                 res.status(200).json(
