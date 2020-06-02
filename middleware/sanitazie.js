@@ -38,8 +38,26 @@ const sanitizeName = (fieldName, isRequired) => {
 
 };
 
+const sanitizeTitle = (fieldName) => {
+    return body(fieldName)
+        .trim()
+        .not()
+        .isEmpty().withMessage('Title is required')
+        .escape()
+};
+
+const sanitizeContent = (fieldName) => {
+    return body(fieldName)
+        .trim()
+        .not()
+        .isEmpty().withMessage('Content is required')
+        .escape()
+};
+
 module.exports = {
     sanitizeEmail,
     sanitizePassword,
-    sanitizeName
+    sanitizeName,
+    sanitizeTitle,
+    sanitizeContent
 };

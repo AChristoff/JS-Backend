@@ -5,8 +5,7 @@ require('dotenv').config();
 const {connectionString, port} = require('./config/environment');
 const initializeDataBase = require('./config/database');
 const CORS = require('./config/cors');
-const feedRoutes = require('./routes/feed');
-const authRoutes = require('./routes/auth');
+const interceptor = require('./middleware/interceptor');
 const app = express();
 
 initializeDataBase(connectionString);
@@ -14,8 +13,7 @@ CORS(app);
 
 app.use(bodyParser.json());
 
-app.use('/feed', feedRoutes);
-app.use('/auth', authRoutes);
+interceptor(app);
 
 // General error handling
 app.use((error, req, res, next) => {
