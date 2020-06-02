@@ -7,7 +7,7 @@ const envConfig = {
         jwtSecret: process.env.JWT_SECRET || 'somesupersecret',
     },
     production: {
-        connectionString: process.env.DB_STRING || 'N/A',
+        connectionString: process.env.DB_STRING,
         port: process.env.PORT || 3000,
         jwtSecret: process.env.JWT_SECRET || 'somesupersecret',
     }

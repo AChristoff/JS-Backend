@@ -180,10 +180,10 @@ module.exports = {
             })
             .then(() => {
 
-                const token = jwt.sign(
-                    {},
-                    jwtSecret,
-                    {expiresIn: '0s'});
+                // const token = jwt.sign(
+                //     {},
+                //     jwtSecret,
+                //     {expiresIn: '0s'});
 
                 res.status(200).json(
                     {

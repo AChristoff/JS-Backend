@@ -1,7 +1,7 @@
 const router = require('express').Router();
 const authController = require('../controllers/auth');
 const {body} = require('express-validator/check');
-const {sanitizeEmail, sanitizePassword, sanitizeName} = require('../util/sanitazie');
+const {sanitizeEmail, sanitizePassword, sanitizeName} = require('../middleware/sanitazie');
 
 router.post('/register',
     [
