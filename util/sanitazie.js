@@ -1,6 +1,6 @@
 const User = require('../models/User');
 const {body} = require('express-validator/check');
-const regExp = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`])[0-9a-zA-Z!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]{6,60}$/;
+const passwordRegExp = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`])[0-9a-zA-Z!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]{6,40}$/;
 
 const sanitizeEmail = (fieldName, isRequired) => {
 
@@ -22,8 +22,8 @@ const sanitizePassword = (fieldName, isRequired) => {
     return body(fieldName)
         .if((value, {req}) => isRequired === 'required' ? true : value !== '')
         .trim()
-        .matches(regExp, 'i')
-        .withMessage('Password must be min 6 char long and contain at least one: uppercase / lowercase / special char / digit');
+        .matches(passwordRegExp, 'i')
+        .withMessage('Password must be between 6-40 chars and contain at least one: uppercase / lowercase / special char / digit');
 };
 
 const sanitizeName = (fieldName, isRequired) => {
