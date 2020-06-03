@@ -156,7 +156,7 @@ module.exports = {
                     p.title = post.title;
                     p.content = post.content;
 
-                    if (isAdmin && post.approval) {
+                    if (post.approval && isAdmin) {
                         p.approval = post.approval;
                     }
 
