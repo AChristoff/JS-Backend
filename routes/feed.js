@@ -12,12 +12,12 @@ router.post('/post/create', restrictedPages.isAuth(),
     ],
     feedController.createPost);
 router.get('/post/:postId', feedController.getPostById);
-router.put('/post/update/:postId', restrictedPages.isAuth(),
+router.put('/post/edit/:postId', restrictedPages.isAuth(),
     [
         sanitizeTitle('title'),
         sanitizeContent('content'),
     ],
-    feedController.updatePost);
+    feedController.editPost);
 router.get('/posts', feedController.getPosts);
 router.delete('/post/delete/:postId', restrictedPages.isAuth(), feedController.deletePost);
 

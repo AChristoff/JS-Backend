@@ -131,7 +131,7 @@ module.exports = {
                 next(error);
             });
     },
-    updatePost: (req, res, next) => {
+    editPost: (req, res, next) => {
         // Return 422 with errors array if something went wrong
         if (validatePost(req, res)) {
             const postId = req.params.postId;
@@ -156,6 +156,10 @@ module.exports = {
 
                     p.title = post.title;
                     p.content = post.content;
+
+                    if (isAdmin && post.approval) {
+                        p.approval = post.approval;
+                    }
 
                     return p.save();
                 })

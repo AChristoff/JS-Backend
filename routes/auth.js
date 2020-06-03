@@ -14,7 +14,7 @@ router.post('/register',
 );
 
 router.post('/login', authController.login);
-router.post('/edit', restrictedPages.isAuth(),
+router.put('/edit', restrictedPages.isAuth(),
     [
         body('email').isEmail().withMessage('Please enter a valid email!'),
         sanitizePassword('password', 'required'),
@@ -23,6 +23,6 @@ router.post('/edit', restrictedPages.isAuth(),
         sanitizeName('name')
     ],
     authController.edit);
-router.post('/delete', restrictedPages.isAuth(), authController.delete);
+router.delete('/delete', restrictedPages.isAuth(), authController.delete);
 
 module.exports = router;

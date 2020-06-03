@@ -1,7 +1,7 @@
 const {validationResult} = require('express-validator/check');
 const jwt = require('jsonwebtoken');
-
 const User = require('../models/User');
+const {getToken} = require('../middleware/is-auth');
 const encryption = require('../util/encryption');
 
 const {jwtSecret} = require('../config/environment');
@@ -64,6 +64,7 @@ module.exports = {
                 const token = jwt.sign(
                     {
                         role: user.role,
+                        name: user.name,
                         email: user.email,
                         userId: user._id.toString()
                     },
@@ -89,58 +90,61 @@ module.exports = {
         if (validateUser(req, res)) {
             const {email, password, newEmail, newPassword, name} = req.body;
 
-            User.findOne({email: email})
-                .then((user) => {
-                    if (!user) {
-                        const error = new Error('User not found!');
-                        error.statusCode = 401;
-                        throw error;
-                    }
+            const token = getToken(req, res);
 
-                    if (!user.authenticate(password)) {
-                        const error = new Error('Invalid password!');
-                        error.statusCode = 401;
-                        throw error;
-                    }
+            if (token['email'] !== email) {
+                const error = new Error('Invalid credentials!');
+                error.statusCode = 401;
+                error.param = 'email';
+                throw error;
+            }
 
-                    const salt = user.salt;
-                    let newUserEmail;
-                    let newHashedPassword;
-                    let newName;
+            if (!user.authenticate(password)) {
+                const error = new Error('Invalid credentials!');
 
-                    if (newEmail) {
-                        newUserEmail = newEmail;
-                    } else {
-                        newUserEmail = email;
-                    }
+                error.statusCode = 401;
+                error.param = 'password';
+                throw error;
+            }
 
-                    if (newPassword) {
-                        newHashedPassword = encryption.generateHashedPassword(salt, newPassword);
-                    } else {
-                        newHashedPassword = encryption.generateHashedPassword(salt, password);
-                    }
 
-                    if (name) {
-                        newName = name;
-                    } else {
-                        newName = user.name;
-                    }
+            const salt = user.salt;
+            let newUserEmail;
+            let newHashedPassword;
+            let newName;
 
-                    if (!newEmail && !newPassword && !name) {
-                        const error = new Error('New feed is required');
-                        error.statusCode = 400;
-                        throw error;
-                    }
+            if (newEmail) {
+                newUserEmail = newEmail;
+            } else {
+                newUserEmail = email;
+            }
 
-                    const newUserData = {
-                        email: newUserEmail,
-                        hashedPassword: newHashedPassword,
-                        name: newName,
-                        salt,
-                    };
+            if (newPassword) {
+                newHashedPassword = encryption.generateHashedPassword(salt, newPassword);
+            } else {
+                newHashedPassword = encryption.generateHashedPassword(salt, password);
+            }
 
-                    return User.updateOne({email: email}, newUserData);
-                })
+            if (name) {
+                newName = name;
+            } else {
+                newName = token['name'];
+            }
+
+            if (!newEmail && !newPassword && !name) {
+                const error = new Error('New feed is required');
+                error.statusCode = 400;
+                throw error;
+            }
+
+            const newUserData = {
+                email: newUserEmail,
+                hashedPassword: newHashedPassword,
+                name: newName,
+                salt,
+            };
+
+            User.updateOne({email: email}, newUserData)
                 .then(() => {
 
                     res.status(200).json(
@@ -160,17 +164,30 @@ module.exports = {
     delete: (req, res, next) => {
         const {email, password} = req.body;
 
+        const token = getToken(req, res);
+
         User.findOne({email: email})
             .then((user) => {
                 if (!user) {
-                    const error = new Error('User not found!');
+                    const error = new Error('Invalid credentials!');
+
                     error.statusCode = 401;
+                    error.param = 'email';
                     throw error;
                 }
 
                 if (!user.authenticate(password)) {
-                    const error = new Error('Invalid password!');
+                    const error = new Error('Invalid credentials!');
+
                     error.statusCode = 401;
+                    error.param = 'password';
+                    throw error;
+                }
+
+                if (token['email'] !== email) {
+                    const error = new Error('Invalid credentials!');
+                    error.statusCode = 401;
+                    error.param = 'email';
                     throw error;
                 }
 
@@ -178,15 +195,9 @@ module.exports = {
             })
             .then(() => {
 
-                // const token = jwt.sign(
-                //     {},
-                //     jwtSecret,
-                //     {expiresIn: '0s'});
-
                 res.status(200).json(
                     {
                         message: 'User successfully deleted!',
-                        token,
                     });
             })
             .catch(error => {
