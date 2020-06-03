@@ -35,10 +35,9 @@ module.exports = {
         }
 
         const decodedToken = getToken(req, res);
+        const isAdmin = decodedToken.role === 'Admin';
 
-        if (role
-            && decodedToken.role !== role
-            && decodedToken.role !== 'Admin') {
+        if (role && !isAdmin && decodedToken.role !== role) {
 
             return res.status(401)
                 .json({
