@@ -34,7 +34,7 @@ module.exports = {
                 });
         }
 
-        const decodedToken = getToken(req, req);
+        const decodedToken = getToken(req, res);
 
         if (role
             && decodedToken.role !== role
