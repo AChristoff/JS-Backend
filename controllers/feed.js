@@ -1,6 +1,10 @@
+const jwt = require('jsonwebtoken');
+const {jwtSecret} = require('../config/environment');
 const {validationResult} = require('express-validator/check');
 const Post = require('../models/Post');
 const User = require('../models/User');
+const {getToken} = require('../middleware/is-auth');
+
 
 function validatePost(req, res) {
     const errors = validationResult(req);
@@ -133,6 +137,9 @@ module.exports = {
             const postId = req.params.postId;
             const post = req.body;
 
+            const token = getToken(req, res);
+            const isAdmin = token.role === 'Admin';
+
             Post.findById(postId)
                 .then((p) => {
                     if (!p) {
@@ -141,7 +148,7 @@ module.exports = {
                         throw error;
                     }
 
-                    if (p.creator.toString() !== req.userId) {
+                    if (p.creator.toString() !== req.userId && !isAdmin) {
                         const error = new Error('Unauthorized');
                         error.statusCode = 403;
                         throw error;
