@@ -1,7 +1,42 @@
 const jwt = require('jsonwebtoken');
 const {jwtSecret} = require('../config/environment');
 
-function getToken(req, res) {
+module.exports = {
+    isAuth: (role) => (req, res, next) => {
+
+        const authHeaders = req.get('Authorization');
+
+        if (!authHeaders) {
+            return res.status(401)
+                .json({
+                    message: 'Unauthorized!',
+                    error: 'Authorization header is missing!'
+                });
+        }
+
+        const decodedToken = decodeToken(req, res);
+        const isAdmin = decodedToken.role === 'Admin';
+
+        if (role && !isAdmin && decodedToken.role !== role) {
+
+            return res.status(401)
+                .json({
+                    message: 'Unauthorized!',
+                    error: `${role} rights are required!`
+                });
+
+        }
+
+        req.userId = decodedToken.userId;
+        req.userName = decodedToken.name;
+        req.userEmail = decodedToken.name;
+        req.userRole = decodedToken.role;
+
+        next();
+    }
+};
+
+function decodeToken(req, res) {
 
     const token = req.get('Authorization').split(' ')[1];
     let decodedToken;
@@ -20,35 +55,3 @@ function getToken(req, res) {
 
     return decodedToken;
 }
-
-module.exports = {
-    isAuth: (role) => (req, res, next) => {
-
-        const authHeaders = req.get('Authorization');
-
-        if (!authHeaders) {
-            return res.status(401)
-                .json({
-                    message: 'Unauthorized!',
-                    error: 'Authorization header is missing!'
-                });
-        }
-
-        const decodedToken = getToken(req, res);
-        const isAdmin = decodedToken.role === 'Admin';
-
-        if (role && !isAdmin && decodedToken.role !== role) {
-
-            return res.status(401)
-                .json({
-                    message: 'Unauthorized!',
-                    error: `${role} rights are required!`
-                });
-
-        }
-
-        req.userId = decodedToken.userId;
-        next();
-    },
-    getToken: getToken
-};

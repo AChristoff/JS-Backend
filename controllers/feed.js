@@ -3,8 +3,6 @@ const {jwtSecret} = require('../config/environment');
 const {validationResult} = require('express-validator/check');
 const Post = require('../models/Post');
 const User = require('../models/User');
-const {getToken} = require('../middleware/is-auth');
-
 
 function validatePost(req, res) {
     const errors = validationResult(req);
@@ -85,9 +83,10 @@ module.exports = {
                     throw error;
                 }
 
-                if (post.creator.toString() !== req.userId) {
+                if (post.creator.toString() !== req.userId && req.userRole !== 'Admin') {
                     const error = new Error('Unauthorized');
                     error.statusCode = 403;
+                    error.param = 'Only the author or admin can delete the post!';
                     throw error;
                 }
 
@@ -137,8 +136,7 @@ module.exports = {
             const postId = req.params.postId;
             const post = req.body;
 
-            const token = getToken(req, res);
-            const isAdmin = token.role === 'Admin';
+            const isAdmin = req.userRole === 'Admin';
 
             Post.findById(postId)
                 .then((p) => {
@@ -151,6 +149,7 @@ module.exports = {
                     if (p.creator.toString() !== req.userId && !isAdmin) {
                         const error = new Error('Unauthorized');
                         error.statusCode = 403;
+                        error.param = 'Only the author or admin can edit the post!';
                         throw error;
                     }
 

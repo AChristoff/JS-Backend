@@ -1,7 +1,6 @@
 const {validationResult} = require('express-validator/check');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
-const {getToken} = require('../middleware/is-auth');
 const encryption = require('../util/encryption');
 
 const {jwtSecret} = require('../config/environment');
@@ -45,54 +44,54 @@ module.exports = {
         }
     },
     login: (req, res, next) => {
-        const {email, password} = req.body;
+        if (validateUser(req, res)) {
+            const {email, password} = req.body;
 
-        User.findOne({email: email})
-            .then((user) => {
-                if (!user) {
-                    const error = new Error('User not found!');
-                    error.statusCode = 401;
-                    throw error;
-                }
+            User.findOne({email: email})
+                .then((user) => {
+                    if (!user) {
+                        const error = new Error('User not found!');
+                        error.statusCode = 401;
+                        throw error;
+                    }
 
-                if (!user.authenticate(password)) {
-                    const error = new Error('Invalid password!');
-                    error.statusCode = 401;
-                    throw error;
-                }
+                    if (!user.authenticate(password)) {
+                        const error = new Error('Invalid password!');
+                        error.statusCode = 401;
+                        throw error;
+                    }
 
-                const token = jwt.sign(
-                    {
-                        role: user.role,
-                        name: user.name,
-                        email: user.email,
-                        userId: user._id.toString()
-                    },
-                    jwtSecret,
-                    {expiresIn: '1h'});
+                    const token = jwt.sign(
+                        {
+                            role: user.role,
+                            name: user.name,
+                            email,
+                            userId: user._id.toString()
+                        },
+                        jwtSecret,
+                        {expiresIn: '1h'});
 
-                res.status(200).json(
-                    {
-                        message: 'User successfully logged in!',
-                        token,
-                        userId: user._id.toString()
-                    });
-            })
-            .catch(error => {
-                if (!error.statusCode) {
-                    error.statusCode = 500;
-                }
+                    res.status(200).json(
+                        {
+                            message: 'User successfully logged in!',
+                            token,
+                            userId: user._id.toString()
+                        });
+                })
+                .catch(error => {
+                    if (!error.statusCode) {
+                        error.statusCode = 500;
+                    }
 
-                next(error);
-            })
+                    next(error);
+                })
+        }
     },
     edit: (req, res, next) => {
         if (validateUser(req, res)) {
             const {email, password, newEmail, newPassword, name} = req.body;
 
-            const token = getToken(req, res);
-
-            if (token['email'] !== email) {
+            if (req.userEmail !== email) {
                 const error = new Error('Invalid credentials!');
                 error.statusCode = 401;
                 error.param = 'email';
@@ -128,7 +127,7 @@ module.exports = {
             if (name) {
                 newName = name;
             } else {
-                newName = token['name'];
+                newName = req.userName;
             }
 
             if (!newEmail && !newPassword && !name) {
@@ -162,50 +161,50 @@ module.exports = {
         }
     },
     delete: (req, res, next) => {
-        const {email, password} = req.body;
+        if (validateUser(req, res)) {
+            const {email, password} = req.body;
 
-        const token = getToken(req, res);
+            User.findOne({email: email})
+                .then((user) => {
+                    if (!user) {
+                        const error = new Error('Invalid credentials!');
 
-        User.findOne({email: email})
-            .then((user) => {
-                if (!user) {
-                    const error = new Error('Invalid credentials!');
+                        error.statusCode = 401;
+                        error.param = 'email';
+                        throw error;
+                    }
 
-                    error.statusCode = 401;
-                    error.param = 'email';
-                    throw error;
-                }
+                    if (!user.authenticate(password)) {
+                        const error = new Error('Invalid credentials!');
 
-                if (!user.authenticate(password)) {
-                    const error = new Error('Invalid credentials!');
+                        error.statusCode = 401;
+                        error.param = 'password';
+                        throw error;
+                    }
 
-                    error.statusCode = 401;
-                    error.param = 'password';
-                    throw error;
-                }
+                    if (req.userEmail !== email) {
+                        const error = new Error('Invalid credentials!');
+                        error.statusCode = 401;
+                        error.param = 'email';
+                        throw error;
+                    }
 
-                if (token['email'] !== email) {
-                    const error = new Error('Invalid credentials!');
-                    error.statusCode = 401;
-                    error.param = 'email';
-                    throw error;
-                }
+                    return User.deleteOne({email: email});
+                })
+                .then(() => {
 
-                return User.deleteOne({email: email});
-            })
-            .then(() => {
+                    res.status(200).json(
+                        {
+                            message: 'User successfully deleted!',
+                        });
+                })
+                .catch(error => {
+                    if (!error.statusCode) {
+                        error.statusCode = 500;
+                    }
 
-                res.status(200).json(
-                    {
-                        message: 'User successfully deleted!',
-                    });
-            })
-            .catch(error => {
-                if (!error.statusCode) {
-                    error.statusCode = 500;
-                }
-
-                next(error);
-            })
+                    next(error);
+                })
+        }
     }
 };

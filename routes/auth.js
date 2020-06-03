@@ -13,7 +13,12 @@ router.post('/register',
     authController.register
 );
 
-router.post('/login', authController.login);
+router.post('/login',
+    [
+        body('email').isEmail().withMessage('Please enter a valid email!'),
+        sanitizePassword('password', 'required')
+    ],
+    authController.login);
 router.put('/edit', restrictedPages.isAuth(),
     [
         body('email').isEmail().withMessage('Please enter a valid email!'),
