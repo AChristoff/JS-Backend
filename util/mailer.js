@@ -1,6 +1,6 @@
 const nodemailer = require("nodemailer");
 
-module.exports = () => {
+module.exports = (req, res) => {
 
     let transporter = nodemailer.createTransport({
         service: process.env.MAIL_SERVICE,
@@ -13,16 +13,23 @@ module.exports = () => {
     let mailOptions = {
         from: process.env.MAIL_NAME,
         to: process.env.MAIL_NAME,
-        subject: 'Mailer',
+        subject: 'NodeMailer',
         html: "<b>Hello from Rest API?</b>",
     };
 
 
     transporter.sendMail(mailOptions)
         .then(() => {
-            console.log('Mail send!');
+
+            res.status(200).json({
+                message: 'Mail successfully send!',
+            });
         })
-        .catch((err) => {
-            console.error(err);
+        .catch((error) => {
+
+            res.status(400).json({
+                message: 'Mail error!',
+                error
+            });
         });
 };

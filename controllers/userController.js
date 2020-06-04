@@ -196,12 +196,7 @@ module.exports = {
         }
     },
     forgotPassword: (req, res, next) => {
-
-        mailer();
-        console.log('end');
-        res.status(200).json({
-            message: 'Mail send!',
-        });
+        mailer(req, res);
     }
 };
 
