@@ -3,7 +3,10 @@ const User = require('../models/User');
 
 mongoose.Promise = global.Promise;
 function initializeDataBase(connectionString) {
-    mongoose.connect(connectionString, {useNewUrlParser: true});
+    mongoose.connect(connectionString, {
+        useUnifiedTopology: true,
+        useNewUrlParser: true
+    });
 
     const db = mongoose.connection;
 
