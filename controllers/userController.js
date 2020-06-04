@@ -152,6 +152,12 @@ module.exports = {
                 throw error;
             }
 
+            if (req.userRole === 'Admin') {
+                const error = new Error('Admin can not be deleted!');
+                error.statusCode = 403;
+                throw error;
+            }
+
             User.findOne({email: email})
                 .then((user) => {
                     if (!user) {
@@ -167,13 +173,6 @@ module.exports = {
 
                         error.statusCode = 401;
                         error.param = 'password';
-                        throw error;
-                    }
-
-                    if (req.userEmail !== email) {
-                        const error = new Error('Invalid credentials!');
-                        error.statusCode = 401;
-                        error.param = 'email';
                         throw error;
                     }
 
