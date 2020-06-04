@@ -52,12 +52,14 @@ module.exports = {
                     if (!user) {
                         const error = new Error('User not found!');
                         error.statusCode = 401;
+                        error.param = 'email';
                         throw error;
                     }
 
                     if (!user.authenticate(password)) {
                         const error = new Error('Invalid password!');
                         error.statusCode = 401;
+                        error.param = 'password';
                         throw error;
                     }
 

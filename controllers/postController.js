@@ -1,5 +1,3 @@
-const jwt = require('jsonwebtoken');
-const {jwtSecret} = require('../config/environment');
 const {validationResult} = require('express-validator/check');
 const Post = require('../models/Post');
 const User = require('../models/User');
@@ -21,6 +19,7 @@ function validatePost(req, res) {
 module.exports = {
     getPosts: (req, res, next) => {
         // Retrieve all posts in JSON format
+        console.log('opa');
         Post.find()
             .then((posts) => {
                 res

@@ -1,7 +1,7 @@
-const feedRoutes = require('../routes/feed');
+const postRoutes = require('../routes/postRouts');
 const authRoutes = require('../routes/auth');
 
 module.exports = (app) => {
-    app.use('/feed', feedRoutes);
+    app.use('/post', postRoutes);
     app.use('/auth', authRoutes);
 };

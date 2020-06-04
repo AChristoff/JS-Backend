@@ -5,7 +5,8 @@ require('dotenv').config();
 const {connectionString, port} = require('./config/environment');
 const initializeDataBase = require('./config/database');
 const CORS = require('./config/cors');
-const interceptor = require('./middleware/interceptor');
+const routeInterceptor = require('./middleware/interceptor');
+const generalErrors = require('./util/generalErrors');
 const app = express();
 
 initializeDataBase(connectionString);
@@ -13,19 +14,8 @@ CORS(app);
 
 app.use(bodyParser.json());
 
-interceptor(app);
-
-// General error handling
-app.use((error, req, res, next) => {
-    const status = error.statusCode || 500;
-    const message = error.message;
-    const param = error.param;
-    res.status(status).json({
-        message,
-        errors: [{param}]
-    });
-    next();
-});
+routeInterceptor(app);
+generalErrors(app);
 
 
 app.listen(port, () => {
