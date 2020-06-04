@@ -20,6 +20,6 @@
     "express": "4.16.4",
     "express-validator": "6.4.0",
     "jsonwebtoken": "8.4.0",
-    "mongoose": "5.4.7"
+    "mongoose": "5.7.5"
   }
 }
