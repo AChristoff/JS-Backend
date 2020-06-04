@@ -1,8 +1,10 @@
 const router = require('express').Router();
-const authController = require('../controllers/auth');
-const {body} = require('express-validator/check');
-const restrictedPages = require('../middleware/is-auth');
+const userController = require('../controllers/userController');
+const {body} = require('express-validator');
+const restrictedPages = require('../middleware/authenticate');
 const {sanitizeEmail, sanitizePassword, sanitizeName} = require('../middleware/sanitazie');
+
+
 
 router.post('/register',
     [
@@ -10,7 +12,7 @@ router.post('/register',
         sanitizePassword('password', 'required'),
         sanitizeName('name', 'required')
     ],
-    authController.register
+    userController.register
 );
 
 router.post('/login',
@@ -18,7 +20,7 @@ router.post('/login',
         body('email').isEmail().withMessage('Please enter a valid email!'),
         sanitizePassword('password', 'required')
     ],
-    authController.login);
+    userController.login);
 router.put('/edit', restrictedPages.isAuth(),
     [
         body('email').isEmail().withMessage('Please enter a valid email!'),
@@ -27,7 +29,7 @@ router.put('/edit', restrictedPages.isAuth(),
         sanitizePassword('newPassword'),
         sanitizeName('name')
     ],
-    authController.edit);
-router.delete('/delete', restrictedPages.isAuth(), authController.delete);
+    userController.edit);
+router.delete('/delete', restrictedPages.isAuth(), userController.delete);
 
 module.exports = router;

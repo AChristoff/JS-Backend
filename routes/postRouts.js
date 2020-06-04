@@ -1,27 +1,27 @@
 const router = require('express').Router();
 const postController = require('../controllers/postController');
-const restrictedPages = require('../middleware/is-auth');
+const restrictedPages = require('../middleware/authenticate');
 const {sanitizeTitle, sanitizeContent} = require('../middleware/sanitazie');
 
 
-router.post('/create', restrictedPages.isAuth(),
+router.post('/post/create', restrictedPages.isAuth(),
     [
         sanitizeTitle('title'),
         sanitizeContent('content'),
     ],
     postController.createPost);
 
-router.put('/edit/:postId', restrictedPages.isAuth(),
+router.put('/post/edit/:postId', restrictedPages.isAuth(),
     [
         sanitizeTitle('title'),
         sanitizeContent('content'),
     ],
     postController.editPost);
 
-router.get('/:postId', postController.getPostById);
+router.get('/post/:postId', postController.getPostById);
 
-router.get('/all', postController.getPosts);
+router.get('/posts', postController.getPosts);
 
-router.delete('/delete/:postId', restrictedPages.isAuth(), postController.deletePost);
+router.delete('/post/delete/:postId', restrictedPages.isAuth(), postController.deletePost);
 
 module.exports = router;

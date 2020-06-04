@@ -1,5 +1,5 @@
 const User = require('../models/User');
-const {body} = require('express-validator/check');
+const {body} = require('express-validator');
 const passwordRegExp = /^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`])[0-9a-zA-Z!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?~`]{6,40}$/;
 
 const sanitizeEmail = (fieldName, isRequired) => {

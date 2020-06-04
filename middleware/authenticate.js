@@ -29,7 +29,7 @@ module.exports = {
 
         req.userId = decodedToken.userId;
         req.userName = decodedToken.name;
-        req.userEmail = decodedToken.name;
+        req.userEmail = decodedToken.email;
         req.userRole = decodedToken.role;
 
         next();

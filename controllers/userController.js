@@ -1,25 +1,12 @@
-const {validationResult} = require('express-validator/check');
+const {validationResult} = require('express-validator');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const encryption = require('../util/encryption');
-
 const {jwtSecret} = require('../config/environment');
-
-function validateUser(req, res) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(422).json({
-            message: 'User data error!',
-            errors: errors.array()
-        });
-        return false;
-    }
-    return true;
-}
 
 module.exports = {
     register: (req, res, next) => {
-        if (validateUser(req, res)) {
+        if (validator(req, res)) {
             const {email, password, name} = req.body;
             const salt = encryption.generateSalt();
             const hashedPassword = encryption.generateHashedPassword(salt, password);
@@ -44,7 +31,7 @@ module.exports = {
         }
     },
     login: (req, res, next) => {
-        if (validateUser(req, res)) {
+        if (validator(req, res)) {
             const {email, password} = req.body;
 
             User.findOne({email: email})
@@ -90,68 +77,60 @@ module.exports = {
         }
     },
     edit: (req, res, next) => {
-        if (validateUser(req, res)) {
+        if (validator(req, res)) {
             const {email, password, newEmail, newPassword, name} = req.body;
 
-            if (req.userEmail !== email) {
-                const error = new Error('Invalid credentials!');
-                error.statusCode = 401;
-                error.param = 'email';
-                throw error;
-            }
+            User.findOne({email: email})
+                .then((user) => {
+                    if (req.userEmail !== email) {
+                        const error = new Error('Invalid credentials!');
+                        error.statusCode = 401;
+                        error.param = 'email';
+                        throw error;
+                    }
 
-            if (!user.authenticate(password)) {
-                const error = new Error('Invalid credentials!');
+                    if (!user.authenticate(password)) {
+                        const error = new Error('Invalid credentials!');
 
-                error.statusCode = 401;
-                error.param = 'password';
-                throw error;
-            }
+                        error.statusCode = 401;
+                        error.param = 'password';
+                        throw error;
+                    }
 
+                    if (newEmail) {
+                        user.email = newEmail;
+                    }
 
-            const salt = user.salt;
-            let newUserEmail;
-            let newHashedPassword;
-            let newName;
+                    if (newPassword) {
+                        user.hashedPassword = encryption.generateHashedPassword(user.salt, newPassword);
+                    }
 
-            if (newEmail) {
-                newUserEmail = newEmail;
-            } else {
-                newUserEmail = email;
-            }
+                    if (name) {
+                        user.name = name;
+                    }
 
-            if (newPassword) {
-                newHashedPassword = encryption.generateHashedPassword(salt, newPassword);
-            } else {
-                newHashedPassword = encryption.generateHashedPassword(salt, password);
-            }
+                    if (!newEmail && !newPassword && !name) {
+                        const error = new Error('New feed is required');
+                        error.statusCode = 400;
+                        throw error;
+                    }
 
-            if (name) {
-                newName = name;
-            } else {
-                newName = req.userName;
-            }
+                    user.save()
+                        .then(() => {
+                            res.status(200).json({
+                                message: 'User updated successfully!',
+                                user: {email: user.email, name: user.name},
+                            })
+                        })
+                        .catch((error) => {
+                            if (!error.statusCode) {
+                                error.statusCode = 500;
+                            }
 
-            if (!newEmail && !newPassword && !name) {
-                const error = new Error('New feed is required');
-                error.statusCode = 400;
-                throw error;
-            }
-
-            const newUserData = {
-                email: newUserEmail,
-                hashedPassword: newHashedPassword,
-                name: newName,
-                salt,
-            };
-
-            User.updateOne({email: email}, newUserData)
-                .then(() => {
-
-                    res.status(200).json(
-                        {
-                            message: 'User successfully edited!',
+                            next(error);
                         });
+
+
                 })
                 .catch(error => {
                     if (!error.statusCode) {
@@ -159,12 +138,19 @@ module.exports = {
                     }
 
                     next(error);
-                })
+                });
         }
     },
     delete: (req, res, next) => {
-        if (validateUser(req, res)) {
+        if (validator(req, res)) {
             const {email, password} = req.body;
+
+            if (req.userEmail !== email) {
+                const error = new Error('Invalid credentials!');
+                error.statusCode = 401;
+                error.param = 'email';
+                throw error;
+            }
 
             User.findOne({email: email})
                 .then((user) => {
@@ -210,3 +196,15 @@ module.exports = {
         }
     }
 };
+
+function validator(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        res.status(422).json({
+            message: 'User data error!',
+            errors: errors.array()
+        });
+        return false;
+    }
+    return true;
+}

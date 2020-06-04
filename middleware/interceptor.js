@@ -1,7 +1,7 @@
 const postRoutes = require('../routes/postRouts');
-const authRoutes = require('../routes/auth');
+const userRoutes = require('../routes/userRoutes');
 
 module.exports = (app) => {
-    app.use('/post', postRoutes);
-    app.use('/auth', authRoutes);
+    app.use('/blog', postRoutes);
+    app.use('/user', userRoutes);
 };

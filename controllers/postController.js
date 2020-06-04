@@ -1,20 +1,6 @@
-const {validationResult} = require('express-validator/check');
+const {validationResult} = require('express-validator');
 const Post = require('../models/Post');
 const User = require('../models/User');
-
-function validatePost(req, res) {
-    const errors = validationResult(req);
-    if (!errors.isEmpty()) {
-        res.status(422).json({
-            message: 'Feed data error!',
-            errors: errors.array()
-        });
-
-        return false;
-    }
-
-    return true;
-}
 
 module.exports = {
     getPosts: (req, res, next) => {
@@ -35,12 +21,9 @@ module.exports = {
             });
     },
     createPost: (req, res, next) => {
-        // Validate post using express-validator
-        // Return 422 with errors array if something went wrong
-        if (validatePost(req, res)) {
-            const {title, content} = req.body;
 
-            // Create the post in DB and return 201 status code with a message and the post itself with the creator
+        if (validator(req, res)) {
+            const {title, content} = req.body;
             const post = new Post({title, content, creator: req.userId});
             let creator;
 
@@ -130,8 +113,8 @@ module.exports = {
             });
     },
     editPost: (req, res, next) => {
-        // Return 422 with errors array if something went wrong
-        if (validatePost(req, res)) {
+
+        if (validator(req, res)) {
             const postId = req.params.postId;
             const post = req.body;
 
@@ -179,3 +162,17 @@ module.exports = {
         }
     }
 };
+
+function validator(req, res) {
+    const errors = validationResult(req);
+    if (!errors.isEmpty()) {
+        res.status(422).json({
+            message: 'Feed data error!',
+            errors: errors.array()
+        });
+
+        return false;
+    }
+
+    return true;
+}
