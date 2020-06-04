@@ -5,7 +5,6 @@ const restrictedPages = require('../middleware/authenticate');
 const {sanitizeEmail, sanitizePassword, sanitizeName} = require('../middleware/sanitazie');
 
 
-
 router.post('/register',
     [
         sanitizeEmail('email', 'required'),
@@ -21,6 +20,7 @@ router.post('/login',
         sanitizePassword('password', 'required')
     ],
     userController.login);
+
 router.put('/edit', restrictedPages.isAuth(),
     [
         body('email').isEmail().withMessage('Please enter a valid email!'),
@@ -30,6 +30,11 @@ router.put('/edit', restrictedPages.isAuth(),
         sanitizeName('name')
     ],
     userController.edit);
+
+router.post('/forgot-password', userController.forgotPassword);
+
+// router.post('/reset-password', userController.resetPassword);
+
 router.delete('/delete', restrictedPages.isAuth(), userController.delete);
 
 module.exports = router;

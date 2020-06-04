@@ -2,6 +2,7 @@ const {validationResult} = require('express-validator');
 const jwt = require('jsonwebtoken');
 const User = require('../models/User');
 const encryption = require('../util/encryption');
+const mailer = require('../util/mailer');
 const {jwtSecret} = require('../config/environment');
 
 module.exports = {
@@ -193,6 +194,14 @@ module.exports = {
                     next(error);
                 })
         }
+    },
+    forgotPassword: (req, res, next) => {
+
+        mailer();
+        console.log('end');
+        res.status(200).json({
+            message: 'Mail send!',
+        });
     }
 };
 
