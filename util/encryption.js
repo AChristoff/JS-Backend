@@ -6,8 +6,5 @@ module.exports = {
     },
     generateHashedPassword: (salt, password) => {
         return crypto.createHmac('sha256', salt).update(password).digest('hex')
-    },
-    generateResetToken: () => {
-        return crypto.randomBytes(32).toString('hex');
     }
 };

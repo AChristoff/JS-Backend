@@ -33,13 +33,21 @@ module.exports = {
         req.userRole = decodedToken.role;
 
         next();
-    }
+    },
+    decodeToken
 };
 
-function decodeToken(req, res) {
+function decodeToken(req, res, fromParam) {
 
-    const token = req.get('Authorization').split(' ')[1];
+    let token;
     let decodedToken;
+
+    if (fromParam) {
+        token = req.params.resetToken;
+    } else {
+        token = req.get('Authorization').split(' ')[1];
+    }
+
 
     try {
         decodedToken = jwt.verify(token, jwtSecret);

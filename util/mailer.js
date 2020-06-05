@@ -15,10 +15,11 @@ module.exports = (req, res, to, resetLink) => {
         to,
         subject: 'Reset your Rest API password',
         html: `<p style="font-size:26px;
-                   color:#374957;
-                   margin:0;font-weight:600;
-                   padding:0;
+                   font-weight:600;
                    font-family:Helvetica, Arial;
+                   color:#374957;
+                   margin:0;
+                   padding:0;
                    line-height:150.0%;
                    text-align:left;">
                    Forgot your password?
@@ -26,9 +27,10 @@ module.exports = (req, res, to, resetLink) => {
                
                <p style="font-size:22px;
                   color:#374957;
-                  margin:10px 0;
+                  font-family:Helvetica, Arial;
+                  margin: 4px 0 0 0;
                   text-align:left;">
-                  Don't worry, we've got your back!
+                  Don't worry, I got you covered!
                </p>
                
                <p style="margin:24px 0;
@@ -47,13 +49,17 @@ module.exports = (req, res, to, resetLink) => {
                        height:44px;
                        line-height:44px;
                        display:inline-block;
-                       padding:0 12px;
+                       padding:0 15px;
                        border-radius:3px;
                        font-weight:600;" 
                        target="_blank">
                        Reset my password
                    </a>
                    
+               </p>
+
+               <p style="font-size: 17px;color:#374957;margin:10px 0;text-align:left;">
+                  This link will be active for the next 24h.
                </p>`,
     };
 

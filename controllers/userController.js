@@ -4,6 +4,7 @@ const User = require('../models/User');
 const encryption = require('../util/encryption');
 const mailer = require('../util/mailer');
 const {jwtSecret} = require('../config/environment');
+const {decodeToken} = require('../middleware/authenticate');
 
 module.exports = {
     register: (req, res, next) => {
@@ -210,7 +211,8 @@ module.exports = {
                         throw error;
                     }
 
-                    const resetToken = encryption.generateResetToken();
+                    const resetToken = jwt.sign({email}, jwtSecret, {expiresIn: '24h'});
+
                     const resetLink = `http://localhost:3000/user/reset-password/${resetToken}`;
 
                     user.resetToken = resetToken;
@@ -240,14 +242,23 @@ module.exports = {
 
             const resetToken = req.params.resetToken;
             const newPassword = req.body.newPassword;
+            const email = decodeToken(req, res, true).email;
 
-            User.findOne({resetToken: resetToken})
+            User.findOne({email: email})
                 .then((user) => {
                     if (!user) {
-                        const error = new Error('Reset password link expired!');
+                        const error = new Error('User not found!');
 
                         error.statusCode = 401;
-                        error.param = 'Links is available only 24h';
+                        error.param = 'Invalid token!';
+                        throw error;
+                    }
+
+                    if(resetToken !== user.resetToken) {
+                        const error = new Error('Unauthorized');
+
+                        error.statusCode = 401;
+                        error.param = 'Invalid token!';
                         throw error;
                     }
 
