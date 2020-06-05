@@ -31,9 +31,15 @@ router.put('/edit', restrictedPages.isAuth(),
     ],
     userController.edit);
 
-router.post('/forgot-password', userController.forgotPassword);
+router.put('/forgot-password', [
+        body('email').isEmail().withMessage('Please enter a valid email!'),
+    ],
+    userController.forgotPassword);
 
-// router.post('/reset-password', userController.resetPassword);
+router.put('/reset-password/:resetToken', [
+        sanitizePassword('newPassword'),
+    ],
+    userController.resetPassword);
 
 router.delete('/delete', restrictedPages.isAuth(), userController.delete);
 

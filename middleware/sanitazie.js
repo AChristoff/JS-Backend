@@ -18,7 +18,6 @@ const sanitizeEmail = (fieldName, isRequired) => {
 };
 
 const sanitizePassword = (fieldName, isRequired) => {
-
     return body(fieldName)
         .if((value, {req}) => isRequired === 'required' ? true : value !== '')
         .trim()

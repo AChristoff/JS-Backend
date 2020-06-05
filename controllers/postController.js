@@ -4,8 +4,7 @@ const User = require('../models/User');
 
 module.exports = {
     getPosts: (req, res, next) => {
-        // Retrieve all posts in JSON format
-        console.log('opa');
+
         Post.find()
             .then((posts) => {
                 res

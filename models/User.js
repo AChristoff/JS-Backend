@@ -21,6 +21,9 @@ const userSchema = new Schema(
             type: Schema.Types.String,
             required: true
         },
+        resetToken: {
+            type: Schema.Types.String
+        },
         posts: [{type: Schema.Types.ObjectId, ref: 'Post'}]
     },
     {

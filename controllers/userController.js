@@ -17,6 +17,7 @@ module.exports = {
                 hashedPassword,
                 name,
                 salt,
+                resetToken: '',
                 posts: []
             }).then((user) => {
                 res.status(201)
@@ -196,7 +197,96 @@ module.exports = {
         }
     },
     forgotPassword: (req, res, next) => {
-        mailer(req, res);
+        if (validator(req, res)) {
+            const email = req.body.email;
+
+            User.findOne({email: email})
+                .then((user) => {
+                    if (!user) {
+                        const error = new Error('Invalid credentials!');
+
+                        error.statusCode = 401;
+                        error.param = 'This email is not registered!';
+                        throw error;
+                    }
+
+                    const resetToken = encryption.generateResetToken();
+                    const resetLink = `http://localhost:3000/user/reset-password/${resetToken}`;
+
+                    user.resetToken = resetToken;
+                    user.save()
+                        .then(() => {
+                            mailer(req, res, email, resetLink);
+                        })
+                        .catch((error) => {
+                            if (!error.statusCode) {
+                                error.statusCode = 500;
+                            }
+
+                            next(error);
+                        });
+                })
+                .catch(error => {
+                    if (!error.statusCode) {
+                        error.statusCode = 500;
+                    }
+
+                    next(error);
+                })
+        }
+    },
+    resetPassword: (req, res, next) => {
+        if (validator(req, res)) {
+
+            const resetToken = req.params.resetToken;
+            const newPassword = req.body.newPassword;
+
+            User.findOne({resetToken: resetToken})
+                .then((user) => {
+                    if (!user) {
+                        const error = new Error('Reset password link expired!');
+
+                        error.statusCode = 401;
+                        error.param = 'Links is available only 24h';
+                        throw error;
+                    }
+
+                    if (!newPassword) {
+                        const error = new Error('Invalid input!');
+
+                        error.statusCode = 401;
+                        error.param = 'newPassword';
+                        throw error;
+                    }
+
+                    user.hashedPassword = encryption.generateHashedPassword(user.salt, newPassword);
+                    user.resetToken = '';
+
+                    user.save()
+                        .then(() => {
+                            res.status(200).json(
+                                {
+                                    message: 'User password has been reset successfully!',
+                                    userId: user._id
+                                });
+
+                        })
+                        .catch((error) => {
+                            if (!error.statusCode) {
+                                error.statusCode = 500;
+                            }
+
+                            next(error);
+                        });
+                })
+                .catch(error => {
+                    if (!error.statusCode) {
+                        error.statusCode = 500;
+                    }
+
+                    next(error);
+                })
+        }
     }
 };
 
